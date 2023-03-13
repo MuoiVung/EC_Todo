@@ -1,25 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { StylesType } from "./types";
+import { Box, CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+
+import TodoTabs from "./components/TodoTabs";
+import TodoForm from "./components/TodoForm";
+import theme from "./theme";
+import TasksProvider from "./providers/TasksProvider";
+
+const styles: StylesType = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    maxWidth: "1600px",
+    mx: "auto",
+  },
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <TasksProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={styles.container}>
+          <TodoForm />
+        </Box>
+        <TodoTabs />
+      </ThemeProvider>
+    </TasksProvider>
   );
 }
 
