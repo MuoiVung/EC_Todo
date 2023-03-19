@@ -29,7 +29,6 @@ const TodoForm = () => {
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<FormDataType>({
     resolver: yupResolver(validationSchema),
@@ -48,14 +47,10 @@ const TodoForm = () => {
     reset();
   };
 
-  const handleChangeValue = (name: keyof FormDataType, value: string) => {
-    setValue(name, value);
-  };
-
   return (
     <Box sx={styles.wrapper}>
       <Typography sx={styles.header}>Todo App</Typography>
-      <Box sx={styles.form}>
+      <Box component="form" sx={styles.form}>
         <Box sx={styles.inputContainer}>
           <TextField
             sx={styles.input}
@@ -64,7 +59,6 @@ const TodoForm = () => {
             {...register("name")}
             error={errors.name ? true : false}
             helperText={errors.name?.message}
-            onChange={(event) => handleChangeValue("name", event.target.value)}
           />
           <TextField
             sx={styles.input}
@@ -72,9 +66,6 @@ const TodoForm = () => {
             {...register("description")}
             error={errors.description ? true : false}
             helperText={errors.description?.message}
-            onChange={(event) =>
-              handleChangeValue("description", event.target.value)
-            }
           />
         </Box>
         <Button
