@@ -1,14 +1,44 @@
 import { TabContext, TabList } from "@mui/lab";
 import { Box, Tab } from "@mui/material";
-import React, { memo, useMemo, useState } from "react";
-import { useTasksContext } from "../../providers/TasksProvider";
+import React, { memo, useEffect, useMemo, useState } from "react";
+
+import { useAppDispatch, useAppSelector } from "../../hooks/redux.hooks";
+import { selectTasks, tasksSliceActions } from "../../redux/slices/tasksSlice";
+import { TaskType } from "../../types";
+import { cryptoJS } from "../../utils";
 import TodoTab from "../TodoTab";
 import { TaskRowType } from "../TodoTab/types";
 import styles from "./styles";
 
 const TodoTabs = () => {
   const [value, setValue] = useState("todo");
-  const tasks = useTasksContext();
+  const tasks = useAppSelector(selectTasks);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const savedTasks: TaskType[] | null = cryptoJS.decryptData("tasks");
+
+    if (!savedTasks) {
+      return;
+    }
+
+    dispatch(tasksSliceActions.setData(savedTasks));
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      if (tasks.length === 0) {
+        return localStorage.removeItem("tasks");
+      }
+      cryptoJS.encryptData("tasks", tasks);
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, [tasks]);
 
   const todoTasks: TaskRowType[] = useMemo(
     () =>
@@ -56,8 +86,8 @@ const TodoTabs = () => {
             <Tab sx={styles.tab} label="Done" value="done" />
           </TabList>
         </Box>
-        <TodoTab value="todo" rowsData={todoTasks} />
-        <TodoTab value="done" rowsData={doneTasks} />
+        <TodoTab key="todo" value="todo" rowsData={todoTasks} />
+        <TodoTab key="done" value="done" rowsData={doneTasks} />
       </TabContext>
     </Box>
   );

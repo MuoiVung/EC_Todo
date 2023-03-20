@@ -4,9 +4,10 @@ import { memo } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import * as yup from "yup";
+import { useAppDispatch } from "../../hooks/redux.hooks";
 
-import { useTasksDispatchContext } from "../../providers/TasksProvider";
-import { TaskType } from "../../providers/TasksProvider/types";
+import { tasksSliceActions } from "../../redux/slices/tasksSlice";
+import { TaskType } from "../../types";
 import styles from "./styles";
 import { FormDataType } from "./types";
 
@@ -23,7 +24,7 @@ const validationSchema = yup
   .required();
 
 const TodoForm = () => {
-  const tasksDispatch = useTasksDispatchContext();
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -43,7 +44,7 @@ const TodoForm = () => {
       done: false,
     };
 
-    tasksDispatch({ type: "added", newTask });
+    dispatch(tasksSliceActions.add(newTask));
     reset();
   };
 

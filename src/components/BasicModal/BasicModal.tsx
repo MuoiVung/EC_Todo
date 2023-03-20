@@ -5,7 +5,8 @@ import Typography from "@mui/material/Typography";
 import * as yup from "yup";
 
 import { useForm } from "react-hook-form";
-import { useTasksDispatchContext } from "../../providers/TasksProvider";
+import { useAppDispatch } from "../../hooks/redux.hooks";
+import { tasksSliceActions } from "../../redux/slices/tasksSlice";
 import { FormDataType } from "../TodoForm/types";
 import styles from "./styles";
 import { PropsType } from "./types";
@@ -18,7 +19,7 @@ const validationSchema = yup
   .required();
 
 const BasicModal = ({ open, onClose, defaultValue }: PropsType) => {
-  const tasksDispatch = useTasksDispatchContext();
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -35,15 +36,13 @@ const BasicModal = ({ open, onClose, defaultValue }: PropsType) => {
   });
 
   const handleUpdateTask = (data: FormDataType) => {
-    tasksDispatch({
-      type: "updated",
-      task: {
-        id: defaultValue.id,
-        done: defaultValue.done,
-        name: data.name,
-        description: data.description,
-      },
-    });
+    const updatedTask = {
+      id: defaultValue.id,
+      done: defaultValue.done,
+      name: data.name,
+      description: data.description,
+    };
+    dispatch(tasksSliceActions.update(updatedTask));
     reset();
     onClose();
   };

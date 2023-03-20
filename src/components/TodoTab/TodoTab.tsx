@@ -1,15 +1,16 @@
-import { TabPanel } from "@mui/lab";
-import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import { TabPanel } from "@mui/lab";
 import { Box, IconButton, Switch } from "@mui/material";
+import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
 
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { useAppDispatch } from "../../hooks/redux.hooks";
+import { tasksSliceActions } from "../../redux/slices/tasksSlice";
+import { TaskType } from "../../types";
+import BasicModal from "../BasicModal";
 import styles from "./styles";
 import { PropsType, TaskRowType } from "./types";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { useTasksDispatchContext } from "../../providers/TasksProvider";
-import BasicModal from "../BasicModal";
-import { TaskType } from "../../providers/TasksProvider/types";
 
 const TodoTab = ({ value, rowsData }: PropsType) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -20,13 +21,13 @@ const TodoTab = ({ value, rowsData }: PropsType) => {
     done: false,
   });
 
-  const tasksDispatch = useTasksDispatchContext();
+  const dispatch = useAppDispatch();
 
   const handleSwitchChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>, id: string) => {
-      tasksDispatch({ type: "toggled", id, done: event.target.checked });
+      dispatch(tasksSliceActions.toggle({ id, done: event.target.checked }));
     },
-    [tasksDispatch]
+    [dispatch]
   );
 
   const handleOpenModal = (row: TaskRowType) => {
@@ -76,7 +77,7 @@ const TodoTab = ({ value, rowsData }: PropsType) => {
             <Box sx={styles.iconDelete}>
               <IconButton
                 onClick={() =>
-                  tasksDispatch({ type: "deleted", id: params.id as string })
+                  dispatch(tasksSliceActions.delete(params.id as string))
                 }
               >
                 <DeleteOutlineOutlinedIcon />
@@ -86,7 +87,7 @@ const TodoTab = ({ value, rowsData }: PropsType) => {
         ),
       },
     ],
-    [handleSwitchChange, tasksDispatch]
+    [handleSwitchChange, dispatch]
   );
 
   return (

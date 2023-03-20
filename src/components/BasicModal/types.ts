@@ -1,4 +1,4 @@
-import { TaskType } from "../../providers/TasksProvider/types";
+import { TaskType } from "../../types";
 
 export type PropsType = {
   open: boolean;

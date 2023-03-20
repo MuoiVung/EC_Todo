@@ -1,11 +1,12 @@
-import { StylesType } from "./types";
 import { Box, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
+import { Provider } from "react-redux";
+import { StylesType } from "./types";
 
-import TodoTabs from "./components/TodoTabs";
 import TodoForm from "./components/TodoForm";
+import TodoTabs from "./components/TodoTabs";
+import store from "./redux/store";
 import theme from "./theme";
-import TasksProvider from "./providers/TasksProvider";
 
 const styles: StylesType = {
   container: {
@@ -18,7 +19,7 @@ const styles: StylesType = {
 
 function App() {
   return (
-    <TasksProvider>
+    <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Box sx={styles.container}>
@@ -26,7 +27,7 @@ function App() {
         </Box>
         <TodoTabs />
       </ThemeProvider>
-    </TasksProvider>
+    </Provider>
   );
 }
 
