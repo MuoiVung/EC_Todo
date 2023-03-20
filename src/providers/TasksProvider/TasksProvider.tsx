@@ -69,6 +69,9 @@ const TasksProvider = ({ children }: PropsType) => {
 
   useEffect(() => {
     const handleUnload = () => {
+      if (tasks.length === 0) {
+        return localStorage.removeItem("tasks");
+      }
       cryptoJS.encryptData("tasks", tasks);
     };
 
